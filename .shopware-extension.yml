@@ -1,0 +1,190 @@
+name: AsbsShopwareStreamDeck
+compatibility_date: "2026-02-11"
+
+# The store/ folder holds store-page tooling and assets (uploaded separately via
+# "account producer extension-info push"); keep it out of the installable plugin zip.
+build:
+  zip:
+    pack:
+      excludes:
+        paths:
+          - store
+
+store:
+  icon: store/images/icon.png
+  type: extension
+  default_locale: de_DE
+  availabilities:
+    - German
+    - International
+  localizations:
+    - de_DE
+    - en_GB
+  categories:
+    - Auswertung
+    - Integration
+  automatic_bugfix_version_compatibility: true
+
+  meta_title:
+    de: Stream Deck Companion für Shopware 6
+    en: Stream Deck Companion for Shopware 6
+
+  meta_description:
+    de: Zeigt Tagesumsatz, letzte Bestellung und Live-Shop-Status deines Shopware-Shops in Echtzeit auf dem Elgato Stream Deck. Kostenlos & Open Source.
+    en: Show daily revenue, the latest order and live shop status of your Shopware store in real time on the Elgato Stream Deck. Free & open source.
+
+  description:
+    de: file:store/description.de-DE.html
+    en: file:store/description.en-GB.html
+
+  installation_manual:
+    de: file:store/installation.de-DE.html
+    en: file:store/installation.en-GB.html
+
+  highlights:
+    de:
+      - Live-Shop-Kennzahlen direkt auf dem Elgato Stream Deck
+      - Kostenlos & Open Source (MIT)
+      - In 2 Minuten startklar – ohne Build-Schritt auf dem Shop
+      - Shop-gebundener API-Key, kein externer Lizenzserver, kein Tracking
+    en:
+      - Live shop metrics right on the Elgato Stream Deck
+      - Free & open source (MIT)
+      - Ready in two minutes – no build step on the shop
+      - Shop-bound API key, no external license server, no tracking
+
+  features:
+    de:
+      - Tagesumsatz mit Vortagesvergleich
+      - Letzte Bestellung in Echtzeit
+      - Top-Bestellung & Top-Produkt des Tages
+      - Durchschnittlicher Bestellwert (AOV)
+      - Umsatzverlauf der letzten 7 bis 60 Tage und pro Stunde
+      - "Live-Shop-Status: Produktivmodus, Systemzustand, geplante Aufgaben"
+      - Konfigurierbare Bestell- und Zahlungsstatus-Filter
+    en:
+      - Daily revenue with day-over-day comparison
+      - Latest order in real time
+      - Top order & top product of the day
+      - Average order value (AOV)
+      - Revenue trend over the last 7 to 60 days and per hour
+      - "Live shop status: production mode, system health, scheduled tasks"
+      - Configurable order and payment state filters
+
+  tags:
+    de:
+      - Stream Deck
+      - Elgato
+      - Dashboard
+      - Kennzahlen
+      - Reporting
+    en:
+      - Stream Deck
+      - Elgato
+      - dashboard
+      - KPI
+      - reporting
+
+  faq:
+    de:
+      - question: Brauche ich das kostenpflichtige Stream Deck Plugin?
+        answer: Das Companion-Plugin ist kostenlos und stellt die Daten-Endpoints bereit. Für die Anzeige auf der Hardware wird das Stream Deck Plugin aus dem Elgato Marketplace benötigt.
+        position: 0
+      - question: Werden Daten an Dritte übertragen?
+        answer: Nein. Die Endpoints sind über einen shop-gebundenen API-Key geschützt. Es gibt keinen externen Lizenz- oder Tracking-Server – die Auswertung läuft vollständig in deinem Shop.
+        position: 1
+      - question: Muss ich nach der Installation noch etwas bauen?
+        answer: Nein. Die kompilierten Administrations-Assets sind im Plugin enthalten, die Konfiguration erfolgt direkt im Admin.
+        position: 2
+    en:
+      - question: Do I need the paid Stream Deck plugin?
+        answer: The companion plugin is free and provides the data endpoints. To display the data on the hardware you need the Stream Deck plugin from the Elgato Marketplace.
+        position: 0
+      - question: Is any data sent to third parties?
+        answer: No. The endpoints are protected by a shop-bound API key. There is no external license or tracking server – all analytics run entirely inside your shop.
+        position: 1
+      - question: Do I need to build anything after installation?
+        answer: No. The compiled administration assets ship with the plugin and configuration happens right in the admin.
+        position: 2
+
+  images:
+    - file: store/images/de/01-hero.png
+      priority: 0
+      preview:
+        de: true
+        en: false
+      activate:
+        de: true
+        en: false
+    - file: store/images/de/02-features.png
+      priority: 1
+      preview:
+        de: false
+        en: false
+      activate:
+        de: true
+        en: false
+    - file: store/images/de/03-free.png
+      priority: 2
+      preview:
+        de: false
+        en: false
+      activate:
+        de: true
+        en: false
+    - file: store/images/de/04-streamdeck.png
+      priority: 3
+      preview:
+        de: false
+        en: false
+      activate:
+        de: true
+        en: false
+    - file: store/images/de/05-setup.png
+      priority: 4
+      preview:
+        de: false
+        en: false
+      activate:
+        de: true
+        en: false
+    - file: store/images/en/01-hero.png
+      priority: 5
+      preview:
+        de: false
+        en: true
+      activate:
+        de: false
+        en: true
+    - file: store/images/en/02-features.png
+      priority: 6
+      preview:
+        de: false
+        en: false
+      activate:
+        de: false
+        en: true
+    - file: store/images/en/03-free.png
+      priority: 7
+      preview:
+        de: false
+        en: false
+      activate:
+        de: false
+        en: true
+    - file: store/images/en/04-streamdeck.png
+      priority: 8
+      preview:
+        de: false
+        en: false
+      activate:
+        de: false
+        en: true
+    - file: store/images/en/05-setup.png
+      priority: 9
+      preview:
+        de: false
+        en: false
+      activate:
+        de: false
+        en: true

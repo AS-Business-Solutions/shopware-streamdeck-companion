@@ -1,0 +1,12 @@
+{
+  "name": "asbs-shopware-streamdeck-store-assets",
+  "private": true,
+  "type": "module",
+  "description": "Generates the Shopware store assets (icon + preview images) for asbs/shopware-streamdeck from versioned SVG templates.",
+  "scripts": {
+    "build": "node build-assets.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.0"
+  }
+}

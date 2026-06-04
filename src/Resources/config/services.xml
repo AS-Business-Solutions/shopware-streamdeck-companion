@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+                               http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="Asbs\ShopwareStreamDeck\Service\ApiKeyManager">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
+
+        <service id="Asbs\ShopwareStreamDeck\Service\OrderFilterConfig">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="state_machine_state.repository"/>
+        </service>
+
+        <service id="Asbs\ShopwareStreamDeck\Service\RevenueExclusionConfig">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+        </service>
+
+        <service id="Asbs\ShopwareStreamDeck\Service\RevenueExclusionResolver">
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\RevenueExclusionConfig"/>
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\OrderFilterConfig"/>
+            <argument type="service" id="order_line_item.repository"/>
+        </service>
+
+        <service id="Asbs\ShopwareStreamDeck\Service\OrderMetricsService">
+            <argument type="service" id="order.repository"/>
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\OrderFilterConfig"/>
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\RevenueExclusionResolver"/>
+        </service>
+
+        <service id="Asbs\ShopwareStreamDeck\Service\ShopStatusService">
+            <argument>%kernel.environment%</argument>
+            <argument>%kernel.debug%</argument>
+            <argument type="service" id="scheduled_task.repository"/>
+        </service>
+
+        <service id="Asbs\ShopwareStreamDeck\Command\CreateApiKeyCommand">
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\ApiKeyManager"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="Asbs\ShopwareStreamDeck\Controller\DashboardController" public="true">
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\ApiKeyManager"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="Asbs\ShopwareStreamDeck\Controller\ApiKeyController" public="true">
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\ApiKeyManager"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="Asbs\ShopwareStreamDeck\Controller\MetricsController" public="true">
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\ApiKeyManager"/>
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\OrderMetricsService"/>
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\ShopStatusService"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+    </services>
+</container>

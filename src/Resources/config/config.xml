@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <title>API access</title>
+        <title lang="de-DE">API-Zugang</title>
+        <component name="asbs-streamdeck-api-keys">
+            <name>apiKeys</name>
+        </component>
+    </card>
+    <card>
+        <title>Order filter (which orders feed the dashboard)</title>
+        <title lang="de-DE">Bestell-Filter (welche Bestellungen fließen in das Dashboard ein)</title>
+        <input-field type="multi-select">
+            <name>orderStates</name>
+            <label>Order status</label>
+            <label lang="de-DE">Bestellstatus</label>
+            <helpText>Leer = alle Bestellstatus zählen. Andernfalls werden nur Bestellungen mit den ausgewählten Status berücksichtigt.</helpText>
+            <helpText lang="en-GB">Empty = include every order status. Otherwise only orders matching the selected statuses count.</helpText>
+            <options>
+                <option>
+                    <id>open</id>
+                    <name>Open</name>
+                    <name lang="de-DE">Offen</name>
+                </option>
+                <option>
+                    <id>in_progress</id>
+                    <name>In progress</name>
+                    <name lang="de-DE">In Bearbeitung</name>
+                </option>
+                <option>
+                    <id>completed</id>
+                    <name>Completed</name>
+                    <name lang="de-DE">Abgeschlossen</name>
+                </option>
+                <option>
+                    <id>cancelled</id>
+                    <name>Cancelled</name>
+                    <name lang="de-DE">Abgebrochen</name>
+                </option>
+            </options>
+        </input-field>
+        <input-field type="multi-select">
+            <name>paymentStates</name>
+            <label>Payment status</label>
+            <label lang="de-DE">Zahlungsstatus</label>
+            <helpText>Leer = alle Zahlungsstatus zählen. Andernfalls werden nur Bestellungen mit den ausgewählten Zahlungsstatus berücksichtigt.</helpText>
+            <helpText lang="en-GB">Empty = include every payment status. Otherwise only orders with the selected payment statuses count.</helpText>
+            <options>
+                <option>
+                    <id>open</id>
+                    <name>Open</name>
+                    <name lang="de-DE">Offen</name>
+                </option>
+                <option>
+                    <id>paid</id>
+                    <name>Paid</name>
+                    <name lang="de-DE">Bezahlt</name>
+                </option>
+                <option>
+                    <id>paid_partially</id>
+                    <name>Partially paid</name>
+                    <name lang="de-DE">Teilweise bezahlt</name>
+                </option>
+                <option>
+                    <id>authorized</id>
+                    <name>Authorized</name>
+                    <name lang="de-DE">Autorisiert</name>
+                </option>
+                <option>
+                    <id>in_progress</id>
+                    <name>In progress</name>
+                    <name lang="de-DE">In Bearbeitung</name>
+                </option>
+                <option>
+                    <id>reminded</id>
+                    <name>Reminded</name>
+                    <name lang="de-DE">Erinnert</name>
+                </option>
+                <option>
+                    <id>refunded</id>
+                    <name>Refunded</name>
+                    <name lang="de-DE">Erstattet</name>
+                </option>
+                <option>
+                    <id>refunded_partially</id>
+                    <name>Partially refunded</name>
+                    <name lang="de-DE">Teilweise erstattet</name>
+                </option>
+                <option>
+                    <id>cancelled</id>
+                    <name>Cancelled</name>
+                    <name lang="de-DE">Abgebrochen</name>
+                </option>
+                <option>
+                    <id>failed</id>
+                    <name>Failed</name>
+                    <name lang="de-DE">Fehlgeschlagen</name>
+                </option>
+                <option>
+                    <id>chargeback</id>
+                    <name>Chargeback</name>
+                    <name lang="de-DE">Rückbuchung</name>
+                </option>
+                <option>
+                    <id>unconfirmed</id>
+                    <name>Unconfirmed</name>
+                    <name lang="de-DE">Unbestätigt</name>
+                </option>
+            </options>
+        </input-field>
+    </card>
+    <card>
+        <title>Revenue exclusions (positions that are not revenue)</title>
+        <title lang="de-DE">Umsatz-Ausschlüsse (Positionen, die kein Umsatz sind)</title>
+        <component name="sw-entity-multi-id-select">
+            <name>revenueExclusionProductIds</name>
+            <entity>product</entity>
+            <label>Excluded products</label>
+            <label lang="de-DE">Ausgeschlossene Produkte</label>
+            <helpText>Positionen dieser Produkte werden aus allen Umsatzkennzahlen (netto und brutto) herausgerechnet – z. B. virtuelle Zuschläge, die kein echter Umsatz sind. Die Bestellung selbst zählt weiterhin als Bestellung.</helpText>
+            <helpText lang="en-GB">Line items of these products are removed from every revenue metric (net and gross) – e.g. virtual surcharges that are not real revenue. The order itself still counts as an order.</helpText>
+        </component>
+        <input-field type="textarea">
+            <name>revenueExclusionLabels</name>
+            <label>Excluded position labels (one per line)</label>
+            <label lang="de-DE">Ausgeschlossene Positions-Labels (eines pro Zeile)</label>
+            <helpText>Zusätzlich zu Produkten: Positionen, deren Bezeichnung exakt einem dieser Labels entspricht, werden herausgerechnet – für Zuschläge ohne eigenes Produkt. Ein Eintrag pro Zeile.</helpText>
+            <helpText lang="en-GB">In addition to products: line items whose label exactly matches one of these are removed – for surcharges without their own product. One entry per line.</helpText>
+        </input-field>
+    </card>
+</config>

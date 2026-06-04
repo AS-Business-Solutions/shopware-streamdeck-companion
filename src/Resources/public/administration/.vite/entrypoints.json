@@ -1,0 +1,23 @@
+{
+  "base": "/bundles/asbsshopwarestreamdeck/administration/",
+  "entryPoints": {
+    "asbs-shopware-stream-deck": {
+      "css": [],
+      "dynamic": [],
+      "js": [
+        "/bundles/asbsshopwarestreamdeck/administration/assets/asbs-shopware-stream-deck-BGG7p6Id.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}

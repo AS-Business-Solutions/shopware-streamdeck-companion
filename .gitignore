@@ -1,0 +1,9 @@
+vendor/
+store/node_modules/
+.phpunit.result.cache
+.phpunit.cache/
+.php-cs-fixer.cache
+.phpstan-cache/
+*.zip
+# but DO ship the published release artifact so customers can download it from the repo
+!dist/*.zip

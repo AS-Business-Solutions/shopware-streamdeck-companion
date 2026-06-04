@@ -1,0 +1,48 @@
+{% block asbs_streamdeck_api_keys %}
+<div class="asbs-streamdeck-api-keys">
+
+    <sw-alert v-if="newSecret" variant="success" title="Neuer API-Key erstellt">
+        <p>Kopiere diesen Key jetzt — er wird aus Sicherheitsgründen nur dieses eine Mal angezeigt.</p>
+        <p><code style="word-break: break-all;">{{ newSecret }}</code></p>
+        <p>Füge ihn im Stream-Deck-Plugin im Feld „Companion API key" ein.</p>
+        <template #actions>
+            <sw-button size="small" @click="dismissSecret">Verstanden</sw-button>
+        </template>
+    </sw-alert>
+
+    <div class="asbs-streamdeck-api-keys__create">
+        <sw-text-field
+            v-model:value="label"
+            label="Label (optional)"
+            placeholder="z. B. Stream Deck Empfang"
+            :disabled="isLoading">
+        </sw-text-field>
+        <sw-button variant="primary" :isLoading="isLoading" @click="generateKey">
+            API-Key generieren
+        </sw-button>
+    </div>
+
+    <sw-data-grid
+        v-if="keys.length"
+        :dataSource="keys"
+        :columns="keyColumns"
+        :showSelection="false"
+        :showActions="true"
+        :isLoading="isLoading"
+        class="asbs-streamdeck-api-keys__list">
+        <template #column-lastUsedAt="{ item }">
+            {{ item.lastUsedAt || '—' }}
+        </template>
+        <template #actions="{ item }">
+            <sw-context-menu-item variant="danger" @click="deleteKey(item.id)">
+                Löschen
+            </sw-context-menu-item>
+        </template>
+    </sw-data-grid>
+
+    <sw-alert v-else variant="info">
+        Noch keine API-Keys angelegt. Generiere einen, um das Stream-Deck-Plugin mit der Companion zu verbinden.
+    </sw-alert>
+
+</div>
+{% endblock %}

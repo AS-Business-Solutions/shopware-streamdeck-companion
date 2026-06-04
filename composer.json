@@ -1,0 +1,56 @@
+{
+  "name": "asbs/shopware-streamdeck",
+  "description": "Free companion plugin that exposes your Shopware shop's live metrics (revenue, orders, shop status) to the Elgato Stream Deck plugin.",
+  "version": "0.6.0",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "keywords": ["shopware", "shopware6", "stream deck", "elgato", "dashboard", "kpi", "metrics", "reporting", "analytics", "companion"],
+  "authors": [
+    { "name": "AS Business Solutions GmbH", "email": "support@as-bs.com" }
+  ],
+  "require": {
+    "php": "^8.2",
+    "shopware/core": "^6.6 || ^6.7"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.5 || ^11.0",
+    "phpstan/phpstan": "^1.11",
+    "phpstan/phpstan-symfony": "^1.4",
+    "friendsofphp/php-cs-fixer": "^3.59"
+  },
+  "extra": {
+    "shopware-plugin-class": "Asbs\\ShopwareStreamDeck\\AsbsShopwareStreamDeck",
+    "label": {
+      "de-DE": "Shopware Stream Deck Companion",
+      "en-GB": "Shopware Stream Deck Companion"
+    },
+    "description": {
+      "de-DE": "Macht Tagesumsatz, letzte Bestellung und Live-Shop-Status deines Shopware-Shops in Echtzeit auf dem Elgato Stream Deck sichtbar – kostenlos, Open Source und in zwei Minuten startklar.",
+      "en-GB": "Surface daily revenue, the latest order and live shop status of your Shopware store in real time on the Elgato Stream Deck – free, open source and ready in just two minutes."
+    },
+    "manufacturerLink": {
+      "de-DE": "https://as-bs.com",
+      "en-GB": "https://as-bs.com"
+    },
+    "supportLink": {
+      "de-DE": "https://as-bs.com",
+      "en-GB": "https://as-bs.com"
+    }
+  },
+  "autoload": {
+    "psr-4": { "Asbs\\ShopwareStreamDeck\\": "src/" }
+  },
+  "autoload-dev": {
+    "psr-4": { "Asbs\\ShopwareStreamDeck\\Tests\\": "tests/" }
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "composer/package-versions-deprecated": true,
+      "php-http/discovery": true,
+      "symfony/flex": true,
+      "symfony/runtime": true,
+      "phpstan/extension-installer": true
+    }
+  }
+}
