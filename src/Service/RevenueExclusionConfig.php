@@ -17,8 +17,8 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
  */
 class RevenueExclusionConfig
 {
-    public const CONFIG_PRODUCT_IDS = 'AsbsShopwareStreamDeck.config.revenueExclusionProductIds';
-    public const CONFIG_LABELS = 'AsbsShopwareStreamDeck.config.revenueExclusionLabels';
+    public const CONFIG_PRODUCT_IDS = 'ASBusStreamDeckDashboard.config.revenueExclusionProductIds';
+    public const CONFIG_LABELS = 'ASBusStreamDeckDashboard.config.revenueExclusionLabels';
 
     public function __construct(
         private readonly SystemConfigService $systemConfig,

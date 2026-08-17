@@ -105,7 +105,8 @@ class RevenueExclusionResolver
         $criteria->addFilter($this->matchFilter());
 
         $entries = [];
-        foreach ($this->lineItemRepository->search($criteria, $context)->getEntities() as $line) {
+        $lines = $this->lineItemRepository->search($criteria, $context)->getEntities();
+        foreach ($lines as $line) {
             $order = $line->getOrder();
             $price = $line->getPrice();
             if ($order === null || $price === null) {

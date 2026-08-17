@@ -23,8 +23,8 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
  */
 class OrderFilterConfig
 {
-    public const CONFIG_ORDER_STATES = 'AsbsShopwareStreamDeck.config.orderStates';
-    public const CONFIG_PAYMENT_STATES = 'AsbsShopwareStreamDeck.config.paymentStates';
+    public const CONFIG_ORDER_STATES = 'ASBusStreamDeckDashboard.config.orderStates';
+    public const CONFIG_PAYMENT_STATES = 'ASBusStreamDeckDashboard.config.paymentStates';
 
     /** @var array{order:string[],payment:string[]}|null */
     private ?array $cache = null;

@@ -1,11 +1,11 @@
 {
-  "base": "/bundles/asbsshopwarestreamdeck/administration/",
+  "base": "/bundles/asbusstreamdeckdashboard/administration/",
   "entryPoints": {
-    "asbs-shopware-stream-deck": {
+    "a-s-bus-stream-deck-dashboard": {
       "css": [],
       "dynamic": [],
       "js": [
-        "/bundles/asbsshopwarestreamdeck/administration/assets/asbs-shopware-stream-deck-BGG7p6Id.js"
+        "/bundles/asbusstreamdeckdashboard/administration/assets/a-s-bus-stream-deck-dashboard-BVxqc1EJ.js"
       ],
       "legacy": false,
       "preload": []

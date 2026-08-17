@@ -3,6 +3,8 @@ vendor/
 .phpunit.cache/
 .php-cs-fixer.cache
 .phpstan-cache/
+# empty by-product of `shopware-cli extension build`
+src/Storefront/
 *.zip
 # but DO ship the published release artifact so customers can download it from the repo
 !dist/*.zip

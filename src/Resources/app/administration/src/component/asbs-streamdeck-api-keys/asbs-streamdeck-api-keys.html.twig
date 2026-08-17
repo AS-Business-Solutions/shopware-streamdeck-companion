@@ -1,7 +1,7 @@
 {% block asbs_streamdeck_api_keys %}
 <div class="asbs-streamdeck-api-keys">
 
-    <sw-alert v-if="newSecret" variant="success" title="Neuer API-Key erstellt">
+    <sw-alert v-if="newSecret" variant="positive" title="Neuer API-Key erstellt">
         <p>Kopiere diesen Key jetzt — er wird aus Sicherheitsgründen nur dieses eine Mal angezeigt.</p>
         <p><code style="word-break: break-all;">{{ newSecret }}</code></p>
         <p>Füge ihn im Stream-Deck-Plugin im Feld „Companion API key" ein.</p>
@@ -42,6 +42,27 @@
 
     <sw-alert v-else variant="info">
         Noch keine API-Keys angelegt. Generiere einen, um das Stream-Deck-Plugin mit der Companion zu verbinden.
+    </sw-alert>
+
+    <div class="asbs-streamdeck-api-keys__test">
+        <sw-text-field
+            v-model:value="testKey"
+            label="API-Zugang testen"
+            placeholder="API-Key einfügen (optional) — prüft den Key zusätzlich end-to-end"
+            :disabled="isTesting">
+        </sw-text-field>
+        <sw-button :isLoading="isTesting" @click="runTest">
+            Verbindung testen
+        </sw-button>
+    </div>
+
+    <sw-alert v-if="testResult" :variant="testVariant" :title="testTitle">
+        <ul class="asbs-streamdeck-api-keys__test-results">
+            <li v-for="check in testResult.checks" :key="check.id">
+                <strong>{{ checkIcon(check.status) }} {{ checkLabel(check) }}</strong>
+                <span v-if="checkDetail(check)"> — {{ checkDetail(check) }}</span>
+            </li>
+        </ul>
     </sw-alert>
 
 </div>

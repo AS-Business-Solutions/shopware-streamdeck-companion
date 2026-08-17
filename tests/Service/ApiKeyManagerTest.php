@@ -118,4 +118,44 @@ final class ApiKeyManagerTest extends TestCase
 
         (new ApiKeyManager($connection))->delete('not-a-valid-hex-id');
     }
+
+    public function testMatchesVerifiesTheHashWithoutTouchingLastUsedAt(): void
+    {
+        $secret = 'connection-test-key';
+        $connection = $this->createMock(Connection::class);
+        $connection
+            ->method('fetchOne')
+            ->with(
+                self::stringContains('asbs_streamdeck_api_key'),
+                self::callback(static fn (array $p): bool => $p['hash'] === hash('sha256', $secret)),
+            )
+            ->willReturn('11111111111111111111111111111111');
+
+        // The config test must not fake Stream-Deck activity on the key.
+        $connection->expects(self::never())->method('executeStatement');
+
+        self::assertTrue((new ApiKeyManager($connection))->matches($secret));
+    }
+
+    public function testMatchesRejectsUnknownAndEmptySecrets(): void
+    {
+        $connection = $this->createMock(Connection::class);
+        $connection->method('fetchOne')->willReturn(false);
+        $manager = new ApiKeyManager($connection);
+
+        self::assertFalse($manager->matches('revoked-key'));
+        self::assertFalse($manager->matches(''));
+    }
+
+    public function testCountReturnsTheNumberOfStoredKeys(): void
+    {
+        $connection = $this->createMock(Connection::class);
+        $connection
+            ->expects(self::once())
+            ->method('fetchOne')
+            ->with(self::stringContains('COUNT(*)'))
+            ->willReturn('3');
+
+        self::assertSame(3, (new ApiKeyManager($connection))->count());
+    }
 }

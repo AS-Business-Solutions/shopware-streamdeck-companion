@@ -1,3 +1,15 @@
+# 1.1.0
+- Neu: Schaltfläche „Verbindung testen" in der Plugin-Konfiguration – prüft API-Key-Speicher, Kennzahlen-Abfrage und, wenn ein Key eingegeben wird, den Live-Abruf über die Companion-API
+- Behoben: Beim Deinstallieren mit „Alle Daten löschen" bleiben keine API-Keys mehr zurück; nach einer Neuinstallation ist die Key-Verwaltung wieder leer
+
+# 1.0.0
+- Erste Veröffentlichung im Shopware Store
+- Stabiler Funktionsumfang: Metrik-Endpoints (Tagesumsatz, letzte Bestellung, Top-Bestellung & Top-Produkt, durchschnittlicher Bestellwert, Umsatzverlauf, Umsatz pro Stunde/Monat), API-Key-Verwaltung direkt im Admin, Live-Shop-Status sowie konfigurierbare Umsatz-Ausschlüsse und durchgehende Netto/Brutto-Werte – alle zeitabhängigen Kennzahlen zeitzonensicher (inkl. Sommer-/Winterzeit)
+- Unterstützt Shopware 6.7
+
+# 0.6.1
+- Geändert: Unterstützte Shopware-Version auf 6.7 eingegrenzt (6.6 wird nicht mehr unterstützt)
+
 # 0.6.0
 - Neu: Endpunkt „Umsatz pro Monat" (aktuelles Jahr, Januar → aktueller Monat) für die Jahresansicht des Stream-Deck-Dials; gruppiert nach der konfigurierten Zeitzone (zeitzonensicher inkl. Sommer-/Winterzeit) und wendet dieselben Umsatz-Ausschlüsse sowie Netto/Brutto-Logik an wie die übrigen Kennzahlen
 
@@ -14,7 +26,7 @@
 - Behoben: Die API-Key-Verwaltung lädt jetzt korrekt, statt im Ladekreis hängen zu bleiben
 
 # 0.3.0
-- Erstveröffentlichung im Shopware Store
+- Erste Version
 - API-Key-Verwaltung direkt in der Plugin-Konfiguration (Generieren, Auflisten, Widerrufen) – kein Zugriff auf die Konsole nötig
 - Metrik-Endpoints für das Stream Deck Plugin: Tagesumsatz, letzte Bestellung, Top-Bestellung & Top-Produkt, durchschnittlicher Bestellwert, Umsatzverlauf (7–60 Tage), Umsatz pro Stunde
 - Live-Shop-Status: Produktivmodus, Systemzustand und überfällige geplante Aufgaben

@@ -45,6 +45,28 @@ final class ApiKeyManager
         return $rows;
     }
 
+    public function count(): int
+    {
+        return (int) $this->connection->fetchOne('SELECT COUNT(*) FROM '.self::TABLE);
+    }
+
+    /**
+     * Read-only counterpart of isValid(): verifies a secret without touching
+     * last_used_at, so a connection test from the admin does not fake
+     * Stream-Deck activity on the key.
+     */
+    public function matches(string $secret): bool
+    {
+        if ($secret === '') {
+            return false;
+        }
+
+        return $this->connection->fetchOne(
+            'SELECT id FROM '.self::TABLE.' WHERE key_hash = :hash LIMIT 1',
+            ['hash' => hash('sha256', $secret)],
+        ) !== false;
+    }
+
     public function delete(string $id): void
     {
         if (\strlen($id) !== 32 || !ctype_xdigit($id)) {

@@ -7,6 +7,7 @@ namespace Asbs\ShopwareStreamDeck\Controller;
 use Asbs\ShopwareStreamDeck\Service\ApiKeyManager;
 use Asbs\ShopwareStreamDeck\Service\OrderMetricsService;
 use Asbs\ShopwareStreamDeck\Service\ShopStatusService;
+use Shopware\Core\Framework\Api\Context\SystemSource;
 use Shopware\Core\Framework\Context;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,7 +36,7 @@ final class MetricsController extends AbstractController
             return $r;
         }
 
-        return new JsonResponse($this->metrics->latestOrder(Context::createDefaultContext()));
+        return new JsonResponse($this->metrics->latestOrder($this->context()));
     }
 
     #[Route(
@@ -50,7 +51,7 @@ final class MetricsController extends AbstractController
         }
 
         return new JsonResponse($this->metrics->topOrderToday(
-            Context::createDefaultContext(),
+            $this->context(),
             $this->timeZone($request),
         ));
     }
@@ -67,7 +68,7 @@ final class MetricsController extends AbstractController
         }
 
         return new JsonResponse($this->metrics->revenueToday(
-            Context::createDefaultContext(),
+            $this->context(),
             $this->timeZone($request),
         ));
     }
@@ -84,7 +85,7 @@ final class MetricsController extends AbstractController
         }
 
         return new JsonResponse($this->metrics->aovToday(
-            Context::createDefaultContext(),
+            $this->context(),
             $this->timeZone($request),
         ));
     }
@@ -101,7 +102,7 @@ final class MetricsController extends AbstractController
         }
         $days = max(1, min(60, (int) $request->query->get('days', '7')));
         $buckets = $this->metrics->revenueByDay(
-            Context::createDefaultContext(),
+            $this->context(),
             $days,
             $this->timeZone($request),
         );
@@ -120,7 +121,7 @@ final class MetricsController extends AbstractController
             return $r;
         }
         $buckets = $this->metrics->revenueByMonth(
-            Context::createDefaultContext(),
+            $this->context(),
             $this->timeZone($request),
         );
 
@@ -138,7 +139,7 @@ final class MetricsController extends AbstractController
             return $r;
         }
         $buckets = $this->metrics->revenueByHour(
-            Context::createDefaultContext(),
+            $this->context(),
             $this->timeZone($request),
         );
 
@@ -156,7 +157,18 @@ final class MetricsController extends AbstractController
             return $r;
         }
 
-        return new JsonResponse($this->shopStatus->collect(Context::createDefaultContext()));
+        return new JsonResponse($this->shopStatus->collect($this->context()));
+    }
+
+    /**
+     * Companion endpoints are auth_required=false (own X-Asbs-Streamdeck-Key check),
+     * so the framework provides no admin-API context. These are read-only, shop-wide
+     * aggregates → a system-scoped context is the correct source (the framework's
+     * default-context factory, which the Shopware store linter disallows, does the same).
+     */
+    private function context(): Context
+    {
+        return new Context(new SystemSource());
     }
 
     private function authenticate(Request $request): ?JsonResponse

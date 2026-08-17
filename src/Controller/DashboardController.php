@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(defaults: ['_routeScope' => ['api'], 'auth_required' => false])]
 final class DashboardController extends AbstractController
 {
-    public const PLUGIN_VERSION = '0.6.0';
+    public const PLUGIN_VERSION = '1.1.0';
 
     public function __construct(private readonly ApiKeyManager $apiKeyManager)
     {

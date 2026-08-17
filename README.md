@@ -1,12 +1,27 @@
 # Shopware Stream Deck Companion
 
-Free, open-source Shopware 6 plugin (composer name `asbs/shopware-streamdeck`) that
-exposes aggregated dashboard/metric endpoints for the paid **Shopware Dashboard**
-Stream Deck plugin (`de.asbs.shopware`, available on the Elgato Marketplace).
+Free, open-source Shopware 6 plugin (composer name `asbs/shopware-streamdeck`, technical
+name `ASBusStreamDeckDashboard`) that exposes aggregated dashboard/metric endpoints for the
+paid **Shopware Dashboard** Stream Deck plugin (`de.asbs.shopware`, available on the Elgato
+Marketplace).
 
 The companion works on its own — it just makes your shop's live metrics reachable by
 the Stream Deck plugin. It is and stays free and MIT-licensed; the only paid part is the
 Stream Deck plugin itself.
+
+> ### ⚠️ Upgrading from 0.6.x or earlier
+>
+> The technical plugin name changed from `AsbsShopwareStreamDeck` to
+> `ASBusStreamDeckDashboard` (Shopware does not permit the "Shopware" trademark in a
+> technical plugin name). To Shopware this is a **different plugin**, so it does **not**
+> upgrade in place:
+>
+> 1. Note your settings — plugin configuration stored under the old name does not carry over.
+> 2. Uninstall the old `AsbsShopwareStreamDeck` extension.
+> 3. Install this one and generate a fresh API key.
+>
+> Existing API keys are bound to the old plugin's table and will not be visible; issue new
+> ones and update them in the Stream Deck plugin.
 
 ## Install (no build step required)
 
@@ -19,7 +34,7 @@ installation** — no build step on the target shop.
 For installing directly from GitHub, without shell access:
 
 1. Download the ready-to-install ZIP from **[`dist/`](dist/)** in this repository
-   (e.g. `dist/AsbsShopwareStreamDeck-0.6.0.zip`) — the same artifact is also attached
+   (`dist/ASBusStreamDeckDashboard-1.1.0.zip`) — the same artifact is also attached
    to the matching **[GitHub release](../../releases)**.
 2. In your Shopware admin, open **Extensions → My extensions** and click
    **Upload extension** (top right); choose the downloaded ZIP.
@@ -29,24 +44,32 @@ For installing directly from GitHub, without shell access:
 
 ```bash
 bin/console plugin:refresh
-bin/console plugin:install --activate AsbsShopwareStreamDeck
+bin/console plugin:install --activate ASBusStreamDeckDashboard
 bin/console cache:clear
 ```
 
-> The committed assets were built against the Shopware **6.7** admin toolchain and the
-> admin UI was verified on 6.7. The PHP backend is CI-tested on 6.6 + 6.7, but the
-> prebuilt admin bundle has **not** been booted on a 6.6 admin yet — verify there (or
-> rebuild the assets against 6.6) before relying on the config UI on Shopware 6.6.
+> Requires **Shopware 6.7** and PHP 8.2+. Support for 6.6 was dropped in 0.6.1; the
+> committed admin bundle is built against and verified on the 6.7 admin toolchain.
 
 ## Configure
 
-After install + activate, open **Settings → Extensions → Shopware Stream Deck
-Companion → Configuration**:
+After install + activate, open **Extensions → My extensions → KPI Dashboard for Elgato
+Stream Deck → Configure**:
 
-- **API access** card — generate / list / revoke API keys (the secret is shown once).
+- **API access** card — generate / list / revoke API keys (the secret is shown once),
+  plus a **Test connection** button that checks the key store, the metrics read path and,
+  when you paste a key, a live round-trip over the companion API.
 - **Order filter** card — pick which order/payment states feed the metrics.
+- **Revenue exclusions** card — line items that are not real revenue (e.g. virtual
+  surcharges) can be removed from every revenue metric by product or by label.
 
 A CLI fallback exists but is not required: `bin/console asbs:streamdeck:key:create`.
+
+## Uninstalling
+
+Uninstalling with **"delete all data"** drops the plugin's API key table and removes its
+configuration, so a later reinstall starts clean. Use `--keep-user-data` (or leave the
+checkbox unticked in the admin) to keep your keys across an uninstall.
 
 ## Authentication model
 
@@ -54,25 +77,27 @@ A CLI fallback exists but is not required: `bin/console asbs:streamdeck:key:crea
   by the `X-Asbs-Streamdeck-Key` header (the shop-bound shared secret). They are marked
   `auth_required => false` so Shopware's admin OAuth does not block the Stream Deck
   plugin, which only holds the companion key.
-- **Key management** (`/keys` CRUD) requires a logged-in **admin user** (not just any API
-  token) — an integration token must not be able to mint or revoke keys.
+- **Key management** (`/keys` CRUD, `/keys/test`) requires a logged-in **admin user** (not
+  just any API token) — an integration token must not be able to mint or revoke keys.
 
 ## Endpoints
 
 Authenticated via `X-Asbs-Streamdeck-Key`:
 
-- `GET .../ping` — plugin version + shop id (capability detection).
+- `GET .../ping` — plugin version (capability detection).
 - `GET .../metrics/latest-order`
 - `GET .../metrics/top-order-today`
 - `GET .../metrics/revenue-today`
 - `GET .../metrics/aov-today`
 - `GET .../metrics/revenue-by-day` (`?days=7…60`)
 - `GET .../metrics/revenue-by-hour`
+- `GET .../metrics/revenue-by-month` — current year, January → current month
 - `GET .../metrics/shop-status`
 - `GET .../dashboard` — aggregate DTO; currently ships placeholder zeros (not consumed by
   the Stream Deck plugin, which uses the individual `metrics/*` endpoints).
 
-All paths are prefixed with `/api/_action/asbs-streamdeck`.
+All paths are prefixed with `/api/_action/asbs-streamdeck`. Every time-based metric takes an
+optional `?tz=<IANA zone>` and is DST-safe.
 
 ## Develop
 
@@ -83,8 +108,8 @@ vendor/bin/phpstan analyse
 vendor/bin/php-cs-fixer fix --dry-run --diff
 ```
 
-`composer install` will pull `shopware/core` (large). For a CI-equivalent matrix run
-locally:
+`composer install` will pull `shopware/core` (large). To pin the targeted Shopware version
+for a single run:
 
 ```bash
 composer require --no-update "shopware/core:^6.7"
@@ -100,11 +125,16 @@ against a real Shopware admin toolchain — the simplest reproducible way is
 
 ```bash
 shopware-cli extension build .
+rm -rf src/Storefront   # empty by-product of the build, not part of the plugin
 ```
 
 Commit the resulting `src/Resources/public/administration/` (`.vite/entrypoints.json`,
 `.vite/manifest.json`, `assets/*`). The output filename carries a content hash, so a
 changed source produces a new hash; `git add -A` picks up the rename.
+
+Note that green PHPUnit/PHPStan runs do **not** prove the admin UI works — the config card
+is rendered by Vue in the browser. Open the plugin configuration in a real 6.7 admin after
+touching anything under `src/Resources/app/administration/`.
 
 ## License
 

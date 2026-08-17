@@ -95,7 +95,8 @@ final class OrderMetricsService
 
         $top = null;
         $topGross = null;
-        foreach ($this->orderRepository->search($criteria, $context)->getEntities() as $order) {
+        $orders = $this->orderRepository->search($criteria, $context)->getEntities();
+        foreach ($orders as $order) {
             $adjustedGross = (float) $order->getAmountTotal() - $this->exclusions->forOrder($order)['gross'];
             if ($topGross === null || $adjustedGross > $topGross) {
                 $topGross = $adjustedGross;

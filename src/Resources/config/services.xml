@@ -49,6 +49,7 @@
 
         <service id="Asbs\ShopwareStreamDeck\Controller\ApiKeyController" public="true">
             <argument type="service" id="Asbs\ShopwareStreamDeck\Service\ApiKeyManager"/>
+            <argument type="service" id="Asbs\ShopwareStreamDeck\Service\OrderMetricsService"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

@@ -1,0 +1,6 @@
+# shopware-cli parst CHANGELOG_<locale>.md zeilenweise, um den Abschnitt zur
+# aktuellen Version zu finden. Mit CRLF endet die Überschrift auf "1.1.0\r",
+# der Versionsvergleich schlägt fehl und der Upload bricht mit
+# "english changelog is missing" ab. Da core.autocrlf=true beim Checkout (auch
+# dem temporären, den `extension zip` anlegt) CRLF erzeugt, hier hart auf LF.
+*.md text eol=lf

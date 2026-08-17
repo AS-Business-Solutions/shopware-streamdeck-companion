@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Asbs\ShopwareStreamDeck\Controller;
 
 use Asbs\ShopwareStreamDeck\Service\ApiKeyManager;
+use Asbs\ShopwareStreamDeck\Service\OrderMetricsService;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
+use Shopware\Core\Framework\Api\Context\SystemSource;
 use Shopware\Core\Framework\Context;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,8 +27,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(defaults: ['_routeScope' => ['api']])]
 final class ApiKeyController extends AbstractController
 {
-    public function __construct(private readonly ApiKeyManager $apiKeyManager)
-    {
+    public function __construct(
+        private readonly ApiKeyManager $apiKeyManager,
+        private readonly OrderMetricsService $metrics,
+    ) {
     }
 
     #[Route(
@@ -75,6 +79,89 @@ final class ApiKeyController extends AbstractController
         $this->apiKeyManager->delete($id);
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Self-test behind the "Test connection" button in the plugin configuration.
+     *
+     * Always answers 200 — a failed check is data, not a transport error, so the
+     * admin's HTTP client never mistakes an invalid key for an expired session.
+     * Works without a key on hand (secrets are shown exactly once): the key check
+     * is then reported as skipped while the store and read-path checks still run.
+     */
+    #[Route(
+        path: '/api/_action/asbs-streamdeck/keys/test',
+        name: 'api.asbs_streamdeck.keys.test',
+        methods: ['POST'],
+    )]
+    public function test(Request $request, Context $context): Response
+    {
+        if (($r = $this->requireAdminUser($context)) !== null) {
+            return $r;
+        }
+
+        $payload = json_decode($request->getContent() ?: '{}', true);
+        $payload = \is_array($payload) ? $payload : [];
+        $key = isset($payload['key']) ? trim((string) $payload['key']) : '';
+        $timeZone = isset($payload['tz']) ? (string) $payload['tz'] : 'UTC';
+        if (!\in_array($timeZone, \DateTimeZone::listIdentifiers(\DateTimeZone::ALL_WITH_BC), true)) {
+            $timeZone = 'UTC';
+        }
+
+        $checks = [];
+
+        $keyCount = 0;
+        try {
+            $keyCount = $this->apiKeyManager->count();
+            $checks[] = self::check('keyStore', $keyCount > 0 ? 'ok' : 'warning', ['count' => $keyCount]);
+        } catch (\Throwable $e) {
+            $checks[] = self::check('keyStore', 'error', ['message' => $e->getMessage()]);
+        }
+
+        if ($key === '') {
+            $checks[] = self::check('apiKey', 'skipped');
+        } else {
+            $valid = false;
+            try {
+                $valid = $this->apiKeyManager->matches($key);
+                $checks[] = self::check('apiKey', $valid ? 'ok' : 'error');
+            } catch (\Throwable $e) {
+                $checks[] = self::check('apiKey', 'error', ['message' => $e->getMessage()]);
+            }
+            $key = $valid ? $key : '';
+        }
+
+        try {
+            // Exercises the very read path the metric endpoints use, so a broken
+            // order-state filter or DAL problem surfaces here instead of on the
+            // Stream Deck.
+            $revenue = $this->metrics->revenueToday(new Context(new SystemSource()), $timeZone);
+            $checks[] = self::check('metrics', 'ok', ['orders' => $revenue['count']]);
+        } catch (\Throwable $e) {
+            $checks[] = self::check('metrics', 'error', ['message' => $e->getMessage()]);
+        }
+
+        $failed = array_filter($checks, static fn (array $c): bool => $c['status'] === 'error');
+
+        return new JsonResponse([
+            'success' => $failed === [],
+            'version' => DashboardController::PLUGIN_VERSION,
+            'keyCount' => $keyCount,
+            // Tells the admin component whether it may replay the public ping
+            // endpoint with this key for a true end-to-end round-trip.
+            'liveKey' => $key !== '',
+            'checks' => $checks,
+        ]);
+    }
+
+    /**
+     * @param array<string, scalar> $detail
+     *
+     * @return array{id:string,status:string,detail:array<string, scalar>}
+     */
+    private static function check(string $id, string $status, array $detail = []): array
+    {
+        return ['id' => $id, 'status' => $status, 'detail' => $detail];
     }
 
     private function requireAdminUser(Context $context): ?JsonResponse
